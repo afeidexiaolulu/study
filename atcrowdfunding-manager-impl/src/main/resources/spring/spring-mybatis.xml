@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!--Spring整合MyBatis的配置  -->
+	<!-- 让MyBatis操作数据库;  SqlSessionFactory====SqlSession====openSession -->
+	<!--1、引入mybatis-spring整合包  -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--配置MyBatis-SqlSessionFactory的信息  -->
+		<!--  指定mybatis全局配置文件的位置-->
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+		<!-- 指定mybatis使用的数据源 -->
+		<property name="dataSource" ref="myDataSource"></property>
+		<!-- 指定xml映射文件的位置 -->
+		<property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"></property>
+	</bean>
+	
+	<!--2、 自动扫描所有的mapper接口并放在容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 指定所有的mapper接口所在包 -->
+		<property name="basePackage" value="com.atguigu.atcrowdfunding.mapper"></property>
+	</bean>
+	
+	
+	
+	
+
+</beans>

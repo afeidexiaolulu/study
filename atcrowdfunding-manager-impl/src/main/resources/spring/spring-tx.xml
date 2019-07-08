@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<context:property-placeholder location="classpath:druid.properties" />
+
+	<!-- Spring和事务控制相关的配置写在这里 -->
+	<!--1、数据源 -->
+	<bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<property name="username" value="${datasource.username}"></property>
+		<property name="password" value="${datasource.password}"></property>
+		<property name="url" value="${datasource.url}"></property>
+		<property name="driverClassName" value="${datasource.driver}"></property>
+	</bean>
+
+	<!--2、jdbcTemplate/MyBatis -->
+	<!--3、事务控制/切面原理 -->
+	<!--3.1）、配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="myDataSource"></property>
+	</bean>
+	
+<!-- @Transactional 55开
+	<tx:annotation-driven transaction-manager="transactionManager"/> -->
+	<!--3.2）、配置切面工作的切入点；事务增强 -->
+	<!-- 配置版的事务切面 -->
+	<aop:config>
+		<!-- *任意返回值 service包下 ..service下的任意包 *任意类 .*任意方法 (..)任意参数 -->
+		<aop:pointcut
+			expression="execution(* com.atguigu.atcrowdfunding.serivce..*.*(..))"
+			id="point" />
+		<!-- advice-ref：关联增强事务 pointcut-ref：关联事务的切入点 -->
+		<aop:advisor advice-ref="tx" pointcut-ref="point" />
+	</aop:config>
+	<!-- 3.3）、哪些方法怎么切入 -->
+	<tx:advice id="tx" transaction-manager="transactionManager">
+		<!-- 事务属性 -->
+		<tx:attributes>
+			<!-- 所有 方法都是事务 -->
+			<tx:method name="*" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+
+			<!--增删改 -->
+			<tx:method name="insert*" timeout="5000" />
+			<tx:method name="add*" timeout="5000" />
+			<tx:method name="update*" timeout="5000" />
+			<tx:method name="delete*" timeout="5000" />
+		</tx:attributes>
+	</tx:advice>
+
+
+</beans>
