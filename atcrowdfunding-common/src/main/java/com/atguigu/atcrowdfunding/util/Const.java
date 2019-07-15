@@ -15,5 +15,5 @@ public class Const {
 
     public static final String LOGIN_ACCT = "loginAcct";
 
-    public static final String SYS_MENU = "systemMenu";
+    public static final String SYS_MENU = "systemMenus";
 }
