@@ -18,11 +18,4 @@
         });
     });
 
-    //既然来到用户维护这个界面就应该把用户维护给显示出来
-    //高亮
-    $("ul a:contains('${pageTitle}')").css("color","red");
-    //将菜单展开
-    $("ul a:contains('${pageTitle})").parents("ul").show();
-    //将菜单的"tree-closed"移除
-    $("ul a:contains('${pageTitle}')").parents("li.tree-closed").removeClass("tree-closed");
 </script>

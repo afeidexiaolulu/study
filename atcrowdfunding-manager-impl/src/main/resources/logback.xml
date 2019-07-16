@@ -11,7 +11,7 @@
     从低到高；只会打印指定级别以后的
     DEBUG==》INFO===》WARN===》ERROR
     -->
-    <logger name="com.atguigu.atcrowdfunding.mapper" level="debug" additivity="true">
+    <logger name="com.atguigu.atcrowdfunding.mapper" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
     <root level="info">
