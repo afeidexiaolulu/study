@@ -146,10 +146,6 @@
     $("ul a:contains('用户维护')").parents("li.tree-closed").removeClass("tree-closed");
 
 
-    $("tbody .btn-success").click(function(){
-        window.location.href = "#";
-    });
-
     //单个删除
     function deleteUser(sids){
         layer.confirm("确认要删除此用户么？",{btn:["确认","取消"]},function () {

@@ -14,6 +14,7 @@ public class TMenu {
 
     private String url;
 
+    //1对多的关系，需要使用一个list集合
     private List<TMenu> tMenuList = new ArrayList<>();
 
     public List<TMenu> gettMenuList() {
