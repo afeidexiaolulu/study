@@ -51,5 +51,16 @@ public class PermissionController {
         return permissionService.getPermissionByRoleId(roleId);
     }
 
+    @ResponseBody
+    @RequestMapping("/getPermissionByMenuId")
+    public List<TPermission> getPermissionByMenuId(Integer mId){
+        return permissionService.getPermissionByMenuId(mId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/assignPermissionToMenu")
+    public List<TPermission> assignPermissionToMenu(Integer mId, String ids){
+        return permissionService.assignPermissionToMenu(mId, ids);
+    }
 
 }

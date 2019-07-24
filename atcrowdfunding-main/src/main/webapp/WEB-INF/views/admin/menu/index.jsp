@@ -89,6 +89,25 @@
             </div>
         </div>
     </div>
+
+    <%--选择权限模态框--%>
+    <div class="modal fade" id="assignPermission" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myPermissionUpdate">选择权限</h4>
+    </div>
+        <div class="modal-body" >
+            <ul id="permissionTree" class="ztree"></ul>
+        </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    <button type="button" class="btn btn-primary" id="updatePermission">保存修改</button>
+    </div>
+    </div>
+    </div>
+    </div>
 </div>
 
 <%@include file="../../../include/common-js.jsp"%>
@@ -162,6 +181,7 @@
     //鼠标移动到
     function addHoverDom(treeId, treeNode) {
         let btnGroup=$("<span class='btnGroup'></span>");
+        btnGroup.append("<button mid= '"+treeNode.id+"' class='assignBtn'>[*]</button>")
         //添加按钮 总菜单和父菜单才有添加按钮
         if(treeNode.pid == 0 || treeNode.id == 0){
             btnGroup.append("<button class='addBtn'>+</button> ");
@@ -173,7 +193,6 @@
         if(treeNode.id != 0){
              btnGroup.append("<button mid= '"+treeNode.id+"' class='editBtn'>*</button>");
         }
-
         if($("#"+treeNode.tId+"_a").nextAll("span.btnGroup").length<=0){
             $("#"+treeNode.tId+"_a").after(btnGroup);
         }
@@ -185,6 +204,8 @@
         $("#"+treeNode.tId+"_a").nextAll("span.btnGroup").remove();
     }
 
+    //菜单绑定权限的mId
+    let mId = null;
     //绑定事件   单击btn
     $("#treeDemo").on("click",".btnGroup",function(event) {
         if(event.target.className == 'removeBtn'){
@@ -197,7 +218,108 @@
             let id = $(event.target).attr("mid");
             editionMenu(id);
         }
+        if(event.target.className == 'assignBtn'){
+            mId = $(event.target).attr("mid");
+            //alert(mId);
+            AssignPermission(mId);
+        }
     });
+
+    //给菜单分配权限
+    function AssignPermission(mId){
+        //回显ztree权限树
+        initPermissionTree();
+
+        //将原来有的权限回显
+        initPermissionTreeChecked(mId);
+
+        //弹出模态框
+        $('#assignPermission').modal({
+        backdrop:false
+        });
+    }
+
+    //显示ztree
+    function initPermissionTree() {
+        //设置setting
+        let setting = {
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: 0
+                },
+                key:{
+                    url:"xxx",
+                    name:"title"
+                }
+            },
+            check: {
+                enable: true
+            }
+        };
+
+        //调用方法初始化树
+        $.ajax({
+            url:"${appPath}/permission/getAllPermission",
+            success:function(data){
+            //初始化
+            ztree = $.fn.zTree.init($("#permissionTree"), setting, data);
+            //展开
+            ztree.expandAll(true);
+            }
+        });
+    }
+
+
+    //回显被选中节点
+    function initPermissionTreeChecked(Id) {
+        //mId = Id;
+        //发送请求，获取权限
+        $.ajax({
+            type:"post",
+            url:"${appPath}/permission/getPermissionByMenuId",
+            data:{
+                mId:Id
+            },
+            success:function (data) {
+                //回显
+                let treeObj = $.fn.zTree.getZTreeObj("permissionTree");
+                $.each(data,function (i,e) {
+                    let node = treeObj.getNodeByParam("id", e.id, null);
+                    treeObj.checkNode(node, true, false);
+                });
+            }
+        });
+    }
+
+    //更新菜单对应的权限
+    $("#updatePermission").click(function(){
+        //获取选中的权限
+        let treeObj = $.fn.zTree.getZTreeObj("permissionTree");
+        //获取被选的节点
+        let nodes = treeObj.getCheckedNodes(true);
+        let ids = new Array();
+        $.each(nodes,function (i,e) {
+            ids.push(e.id);
+        })
+        let idsStr = ids.join();
+        //发送ajax
+        $.ajax({
+            type:"post",
+            url:"${appPath}/permission/assignPermissionToMenu",
+            data:{
+                ids:idsStr,
+                mId:mId
+            },
+            success:function (data) {
+                //关闭模态框
+                $('#assignPermission').modal('hide');
+            }
+        });
+    });
+
 
     //修改的函数
     function editionMenu(id) {
@@ -267,8 +389,6 @@
         });
 
     });
-
-
 </script>
 </body>
 </html>

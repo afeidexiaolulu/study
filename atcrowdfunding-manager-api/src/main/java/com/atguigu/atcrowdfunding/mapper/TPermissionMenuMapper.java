@@ -27,4 +27,7 @@ public interface TPermissionMenuMapper {
     int updateByPrimaryKeySelective(TPermissionMenu record);
 
     int updateByPrimaryKey(TPermissionMenu record);
+
+    //插入菜单和权限中间表
+    void assignPermissionToMenu(@Param("mId") Integer mId, @Param("ids") List<Integer> ids);
 }

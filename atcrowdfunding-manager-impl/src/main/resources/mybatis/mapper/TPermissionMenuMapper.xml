@@ -178,4 +178,15 @@
       permissionid = #{permissionid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <!--assignPermissionToMenu-->
+  <insert id="assignPermissionToMenu">
+    insert into t_permission_menu (menuid,  permissionid) values
+    <foreach collection="ids" item="id" separator=",">
+      (
+        #{mId},#{id}
+      )
+    </foreach>
+  </insert>
 </mapper>

@@ -33,4 +33,7 @@ public interface TPermissionMapper {
 
     //根据角色查询权限
     List<TPermission> getPermissionByRoleId(Integer roleId);
+
+    //根据菜单查询出权限
+    List<TPermission> getPermissionByMenuId(Integer mId);
 }

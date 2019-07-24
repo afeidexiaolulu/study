@@ -200,4 +200,12 @@
     inner join t_role_permission tr on tp.id = tr.permissionid
     where tr.roleid = #{roleId}
   </select>
+
+
+  <!--getPermissionByMenuId-->
+  <select id="getPermissionByMenuId" resultMap="BaseResultMap">
+    SELECT * FROM t_permission tp
+    left JOIN t_permission_menu tpm on tp.id = tpm.permissionid
+    WHERE tpm.menuid = #{mId}
+  </select>
 </mapper>

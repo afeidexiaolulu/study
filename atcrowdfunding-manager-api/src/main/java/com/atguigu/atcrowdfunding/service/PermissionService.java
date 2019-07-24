@@ -18,4 +18,10 @@ public interface PermissionService {
 
     //根据角色id查询出权限
     List<TPermission> getPermissionByRoleId(Integer roleId);
+
+    //根据菜单查出权限
+    List<TPermission> getPermissionByMenuId(Integer mId);
+
+    //给菜单分配权限
+    List<TPermission> assignPermissionToMenu(Integer mId, String ids);
 }
