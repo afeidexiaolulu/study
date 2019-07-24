@@ -69,7 +69,7 @@
                                     <td>${tAdmin.username} </td>
                                     <td>${tAdmin.email}</td>
                                     <td>
-                                        <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>
+                                        <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check" onclick="window.location.href='${appPath}/admin/toAssignRole.html?adminId='+${tAdmin.id}"></i></button>
                                         <button type="button" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil" onclick="window.location.href='${appPath}/admin/toUpdate.html?adminId='+${tAdmin.id}"></i></button>
                                         <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove" onclick="deleteUser(${tAdmin.id})"></i></button>
                                     </td>
@@ -186,12 +186,6 @@
         //总check不选  被选中的总check框个数相同
         $("#checkBoxId").prop("checked",$(".check:checked").length == $(".check").length);
     });
-
-
-
-
-
-
 </script>
 </body>
 </html>

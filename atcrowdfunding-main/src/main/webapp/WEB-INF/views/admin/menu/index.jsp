@@ -54,6 +54,41 @@
             </div>
         </div>
     </div>
+    <%--修改模态框--%>
+    <div class="modal fade" id="myMenuUpdate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabelUpdate">菜单修改</h4>
+                </div>
+                    <div class="modal-body" >
+                        <form id="formId">
+                            <div class="form-group" >
+                                <input type="hidden" class="form-control" name="id" >
+                            </div>
+                            <div class="form-group" >
+                                <input type="text" class="form-control" name="name" >
+                            </div>
+                            <div class="form-group" >
+                                <input type="text" class="form-control" name="icon" >
+                            </div>
+                            <div class="form-group" >
+                                <input type="text" class="form-control" name="url" >
+                            </div>
+                            <div class="form-group" >
+                                <select  class="form-control" name="pid" >
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="updateMenuId">保存修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <%@include file="../../../include/common-js.jsp"%>
@@ -127,10 +162,18 @@
     //鼠标移动到
     function addHoverDom(treeId, treeNode) {
         let btnGroup=$("<span class='btnGroup'></span>");
-        //添加按钮
-        btnGroup.append("<button >+</button>")
-                .append("<button>-</button>")
-                .append("<button>*</button>");
+        //添加按钮 总菜单和父菜单才有添加按钮
+        if(treeNode.pid == 0 || treeNode.id == 0){
+            btnGroup.append("<button class='addBtn'>+</button> ");
+        }
+        if(!treeNode.isParent){
+            //没有子元素
+            btnGroup.append("<button class='removeBtn'>-</button>");
+        }
+        if(treeNode.id != 0){
+             btnGroup.append("<button mid= '"+treeNode.id+"' class='editBtn'>*</button>");
+        }
+
         if($("#"+treeNode.tId+"_a").nextAll("span.btnGroup").length<=0){
             $("#"+treeNode.tId+"_a").after(btnGroup);
         }
@@ -141,6 +184,91 @@
         //移除
         $("#"+treeNode.tId+"_a").nextAll("span.btnGroup").remove();
     }
+
+    //绑定事件   单击btn
+    $("#treeDemo").on("click",".btnGroup",function(event) {
+        if(event.target.className == 'removeBtn'){
+            alert("移除");
+        }
+        if(event.target.className == 'addBtn'){
+            alert("添加");
+        }
+        if(event.target.className == 'editBtn'){
+            let id = $(event.target).attr("mid");
+            editionMenu(id);
+        }
+    });
+
+    //修改的函数
+    function editionMenu(id) {
+        let selectId = $("#formId select[name='pid']");
+        //请求数据查找所有的主菜单
+        $.ajax({
+            url:"${appPath}/menu/getParentMenu",
+            type:"post",
+            async:false,
+            success:function(data) {
+                //移除之间生成的
+                selectId.empty();
+                //生成的数据  动态的生成option框
+                $.each(data,function(i,e) {
+                    //动态的生成select选择框
+                    selectId.append("<option value='"+e.id+"'>"+e.name+"</option>");
+                });
+            }
+        });
+
+
+        //传递单击菜单的id，查询菜单
+        $.ajax({
+            url:"${appPath}/menu/getMenu",
+            type:"post",
+            data:{
+                id:id
+            },
+            success:function(data) {
+                //数据回显
+                $("#formId input[name='id']").val(data.id);
+                $("#formId input[name='name']").val(data.name);
+                $("#formId input[name='icon']").val(data.icon);
+                $("#formId input[name='url']").val(data.url);
+                $("#formId select[name='pid']").val(data.pid);
+
+                //打开模态框
+                $('#myMenuUpdate').modal({
+                backdrop:false
+                });
+            }
+        });
+
+    }
+
+    $("#updateMenuId").click(function() {
+        //收集表单数据
+
+        //保存
+        $.ajax({
+            url:"${appPath}/menu/updateMenu",
+            type:"post",
+            data:{
+                id: $("#formId input[name='id']").val(),
+                name:$("#formId input[name='name']").val(),
+                icon: $("#formId input[name='icon']").val(),
+                url:$("#formId input[name='url']").val(),
+                pid:$("#formId select[name='pid']").val()
+            },
+            success:function() {
+                //关闭模态框
+                $('#myMenuUpdate').modal("hide");
+                //再次初始化Ztree
+                InitTree();
+            }
+
+        });
+
+    });
+
+
 </script>
 </body>
 </html>

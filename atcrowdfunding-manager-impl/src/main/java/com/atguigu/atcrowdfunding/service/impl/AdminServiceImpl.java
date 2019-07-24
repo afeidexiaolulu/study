@@ -2,7 +2,9 @@ package com.atguigu.atcrowdfunding.service.impl;
 
 import com.atguigu.atcrowdfunding.bean.TAdmin;
 import com.atguigu.atcrowdfunding.bean.TAdminExample;
+import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.mapper.TAdminMapper;
+import com.atguigu.atcrowdfunding.mapper.TAdminRoleMapper;
 import com.atguigu.atcrowdfunding.service.AdminService;
 import com.atguigu.atcrowdfunding.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private TAdminMapper tAdminMapper;
+
+
+    @Autowired
+    private TAdminRoleMapper tAdminRoleMapper;
 
     private static Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
@@ -107,5 +113,30 @@ public class AdminServiceImpl implements AdminService {
         tAdminExample.createCriteria().andIdIn(idList);
         //删除
         return tAdminMapper.deleteByExample(tAdminExample);
+    }
+
+
+    //查询已分配角色
+    @Override
+    public List<TRole> getAssignRole(Integer adminId) {
+        return tAdminMapper.getAssignRole(adminId);
+    }
+
+    //查询未分配的角色
+    @Override
+    public List<TRole> getUnassignRole(Integer adminId) {
+        return tAdminMapper.getUnassignRole(adminId);
+    }
+
+    //分配角色
+    @Override
+    public void assignRole(String adminId, List<Integer> idsList) {
+        tAdminRoleMapper.assignRole(adminId, idsList);
+    }
+
+    //删除角色
+    @Override
+    public void deleteRole(String adminId, List<Integer> idsList) {
+        tAdminRoleMapper.deleteRole(adminId, idsList);
     }
 }

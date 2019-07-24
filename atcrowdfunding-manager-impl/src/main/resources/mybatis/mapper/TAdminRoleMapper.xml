@@ -6,6 +6,24 @@
     <result column="adminid" jdbcType="INTEGER" property="adminid" />
     <result column="roleid" jdbcType="INTEGER" property="roleid" />
   </resultMap>
+  <!--插入-->
+  <insert id="assignRole">
+    insert into t_admin_role(adminid, roleid) values
+    <foreach collection="idsList" item="id" separator=",">
+      (
+      #{adminId},#{id}
+      )
+    </foreach>
+  </insert>
+
+  <!--删除-->
+  <delete id="deleteRole">
+    delete from t_admin_role where adminid=#{adminId} and roleid in
+    <foreach collection="idsList" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </delete>
+
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">

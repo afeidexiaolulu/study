@@ -1,6 +1,7 @@
 package com.atguigu.atcrowdfunding.service;
 
 import com.atguigu.atcrowdfunding.bean.TAdmin;
+import com.atguigu.atcrowdfunding.bean.TRole;
 
 import java.util.List;
 
@@ -24,4 +25,16 @@ public interface AdminService {
 
     //删除用户
     Integer deleteAdmin(List<Integer> idList);
+
+    //查询已分配角色
+    List<TRole> getAssignRole(Integer adminId);
+
+    //查询未分配的角色
+    List<TRole> getUnassignRole(Integer adminId);
+
+    //分配角色
+    void assignRole(String adminId, List<Integer> idsList);
+
+    //删除角色
+    void deleteRole(String adminId, List<Integer> idsList);
 }

@@ -27,4 +27,7 @@ public interface TRolePermissionMapper {
     int updateByPrimaryKeySelective(TRolePermission record);
 
     int updateByPrimaryKey(TRolePermission record);
+
+    //分配角色
+    void assignPermission(@Param("rid") String rid, @Param("idsList") List<Integer> idsList);
 }

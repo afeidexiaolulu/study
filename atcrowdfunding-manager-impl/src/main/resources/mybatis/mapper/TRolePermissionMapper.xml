@@ -178,4 +178,13 @@
       permissionid = #{permissionid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <!--分配角色-->
+  <insert id="assignPermission">
+    insert into t_role_permission(roleid,permissionid) values
+    <foreach collection="idsList" item="id" separator=",">
+      (#{rid}, #{id})
+    </foreach>
+  </insert>
 </mapper>

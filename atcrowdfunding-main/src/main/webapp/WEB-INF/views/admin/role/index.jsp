@@ -10,6 +10,8 @@
     <meta name="author" content="">
 
     <%@include file="/WEB-INF/include/common-css.jsp"%>
+    <%--导入ZTreejs，css--%>
+    <link rel="stylesheet" href="${appPath}/static/ztree/zTreeStyle.css">
     <link rel="stylesheet" href="${appPath}/static/css/main.css">
     <style>
         .tree li {
@@ -124,10 +126,30 @@
             </div>
         </div>
     </div>
+
+    <%--分配角色模态框--%>
+    <div class="modal fade" id="myModalAssignPermission" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="ddd">分配修改</h4>
+                </div>
+                <div class="modal-body" >
+                   <ul id="permissionTree" class="ztree"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="assignPermission">分配权限</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <%@include file="/WEB-INF/include/common-js.jsp"%>
 <%@include file="/WEB-INF/include/show-highlight.jsp"%>
+<script src="${appPath}/static/ztree/jquery.ztree.all-3.5.min.js"></script>
 <script type="text/javascript">
     //既然来到角色维护这个界面就应该把用户维护给显示出来
     //高亮
@@ -236,7 +258,7 @@
         $.each(content,function () {
             //添加btn按钮
             let btnGrout = $("<td></td>");
-            btnGrout.append("<button type='button' class='btn btn-success btn-xs'><i class='glyphicon glyphicon-check'></i></button> ");
+            btnGrout.append("<button type='button' rId='"+this.id+"' class='assignPermissionBtn  btn btn-success btn-xs'><i class='glyphicon glyphicon-check'></i></button> ");
             btnGrout.append("<button type='button' onclick='updateRole("+this.id+")' class='btn btn-primary btn-xs'><i class='glyphicon glyphicon-pencil'></i></button> ");
             btnGrout.append("<button type='button' onclick='deleteRole("+this.id+")' class='btn btn-danger btn-xs'><i class='glyphicon glyphicon-remove'></i></button> ");
 
@@ -344,6 +366,7 @@
 
     //删除
     function deleteRole(rid){
+
         $.ajax({
             type:"post",
             url:"${appPath}/role/delete",
@@ -358,6 +381,105 @@
             }
         });
     }
+
+
+    //定义全局变量  分配权限的id
+    let assignPermissionId = null;
+
+    //分配权限
+    $("#contentTable tbody").on('click', '.assignPermissionBtn',function(){
+        //给分配权限的角色id赋值
+        assignPermissionId = $(this).attr("rid");
+
+        //查出所有的权限 ,将Ztree回显
+        initPermissionTree();
+
+        //将角色已有的权限进行回显
+        initPermissionChecked(assignPermissionId);
+
+        //弹出模态框
+        $('#myModalAssignPermission').modal({
+            backdrop:false
+        });
+    });
+
+    //将已有的权限在zTree中
+    function initPermissionChecked(roleId){
+        //发送请求，获取权限
+        $.ajax({
+            type:"post",
+            url:"${appPath}/permission/getPermissionByRoleId",
+            data:{
+                roleId:roleId
+            },
+            success:function (data) {
+                //回显
+                let treeObj = $.fn.zTree.getZTreeObj("permissionTree");
+                $.each(data,function (i,e) {
+                    let node = treeObj.getNodeByParam("id", e.id, null);
+                    treeObj.checkNode(node, true, false);
+                });
+            }
+        });
+    }
+
+    //初始化权限树
+    function initPermissionTree() {
+        //设置树
+        let setting = {
+            data: {
+                simpleData: {
+                    enable: true,
+                        idKey: "id",
+                        pIdKey: "pid",
+                        rootPId: 0
+                },
+                key:{
+                    url:"xxx",
+                    name:"title"
+                }
+            },
+            check: {
+                enable: true
+            }
+        };
+
+        $.ajax({
+            url:"${appPath}/permission/getAllPermission",
+            success:function(data){
+                //初始化
+                ztree = $.fn.zTree.init($("#permissionTree"), setting, data);
+                //展开
+                ztree.expandAll(true);
+
+            }
+        });
+    }
+
+    //点击保存向中间表插入数据
+    $("#assignPermission").click(function(){
+        //获取选中的权限
+        let treeObj = $.fn.zTree.getZTreeObj("permissionTree");
+        let nodes = treeObj.getCheckedNodes(true);
+        let ids = new Array();
+        $.each(nodes,function (i,e) {
+            ids.push(e.id);
+        })
+        let idsStr = ids.join();
+        //发送ajax
+        $.ajax({
+            type:"post",
+            url:"${appPath}/permission/assignPermission",
+            data:{
+                ids:idsStr,
+                Rid:assignPermissionId
+            },
+            success:function (data) {
+              //关闭模态框
+             $('#myModalAssignPermission').modal('hide');
+            }
+        });
+    });
 
 </script>
 </body>

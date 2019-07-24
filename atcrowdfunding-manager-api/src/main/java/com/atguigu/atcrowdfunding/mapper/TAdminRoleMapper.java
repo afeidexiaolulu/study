@@ -27,4 +27,10 @@ public interface TAdminRoleMapper {
     int updateByPrimaryKeySelective(TAdminRole record);
 
     int updateByPrimaryKey(TAdminRole record);
+
+    //分配角色
+    void assignRole(@Param("adminId") String adminId,  @Param("idsList") List idsList);
+
+    //删除角色
+    void deleteRole(@Param("adminId") String adminId,  @Param("idsList") List idsList);
 }

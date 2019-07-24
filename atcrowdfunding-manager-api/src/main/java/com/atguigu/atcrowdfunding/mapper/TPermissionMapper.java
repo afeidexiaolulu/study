@@ -27,4 +27,10 @@ public interface TPermissionMapper {
     int updateByPrimaryKeySelective(TPermission record);
 
     int updateByPrimaryKey(TPermission record);
+
+    //分配权限
+    void assignPermission(@Param("rid") String rid, @Param("idsList") List<Integer> idsList);
+
+    //根据角色查询权限
+    List<TPermission> getPermissionByRoleId(Integer roleId);
 }

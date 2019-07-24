@@ -1,8 +1,10 @@
 package com.atguigu.atcrowdfunding.controller;
 
 import com.atguigu.atcrowdfunding.bean.TAdmin;
+import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.service.AdminService;
 import com.atguigu.atcrowdfunding.util.Const;
+import com.atguigu.atcrowdfunding.util.IdsUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sun.deploy.panel.ITreeNode;
@@ -138,6 +140,43 @@ public class AdminController {
         return "redirect:/admin/index.html";
     }
 
+
+
+    //角色分配页面跳转
+    @GetMapping("/toAssignRole.html")
+    public String toAssignRole(Integer adminId, Model model, HttpSession session){
+        //将用户id放入session中
+        session.setAttribute(Const.ADDMIN_ID ,adminId);
+
+        //查已分配和未分配的角色
+        List<TRole> assignRoles = adminService.getAssignRole(adminId);
+        List<TRole> unassignRoles = adminService.getUnassignRole(adminId);
+
+        model.addAttribute("assignRoles", assignRoles);
+        model.addAttribute("unassignRoles", unassignRoles);
+
+        return "admin/user/assignRole";
+    }
+
+
+    //添加角色，减少角色
+    @GetMapping("/assignRole")
+    public String assignRole(String ids, String ops, HttpSession session){
+        String adminId = String.valueOf(session.getAttribute(Const.ADDMIN_ID));
+        //将ids取出
+        List<Integer> idsList = IdsUtil.ParseIds(ids);
+
+        //增加
+        if("add".equals(ops)){
+            adminService.assignRole(adminId, idsList);
+        }
+        //删除
+        if("delete".equals(ops)){
+            adminService.deleteRole(adminId, idsList);
+        }
+
+        return "redirect:/admin/toAssignRole.html?adminId="+adminId;
+    }
 
 }
 

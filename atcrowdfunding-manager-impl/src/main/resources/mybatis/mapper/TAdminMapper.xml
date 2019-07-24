@@ -225,4 +225,15 @@
       createtime = #{createtime,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="getAssignRole" parameterType="java.lang.Integer" resultType="com.atguigu.atcrowdfunding.bean.TRole">
+    select tr.id, tr.name FROM t_role tr left join t_admin_role ta on  ta.roleid= tr.id
+    where  ta.adminid = #{adminId}
+    </select>
+
+
+  <select id="getUnassignRole" parameterType="java.lang.Integer" resultType="com.atguigu.atcrowdfunding.bean.TRole">
+    select * from t_role where id not in (select tr.id FROM t_role tr left join t_admin_role ta on  ta.roleid= tr.id where  ta.adminid = #{adminId})
+    </select>
 </mapper>

@@ -3,6 +3,8 @@ package com.atguigu.atcrowdfunding.mapper;
 import com.atguigu.atcrowdfunding.bean.TAdmin;
 import com.atguigu.atcrowdfunding.bean.TAdminExample;
 import java.util.List;
+
+import com.atguigu.atcrowdfunding.bean.TRole;
 import org.apache.ibatis.annotations.Param;
 
 public interface TAdminMapper {
@@ -27,4 +29,10 @@ public interface TAdminMapper {
     int updateByPrimaryKeySelective(TAdmin record);
 
     int updateByPrimaryKey(TAdmin record);
+
+    //查询已分配角色
+    List<TRole> getAssignRole(Integer adminId);
+
+    //查询未分配的角色
+    List<TRole> getUnassignRole(Integer adminId);
 }

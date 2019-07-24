@@ -29,4 +29,6 @@ public class Const {
     public static final String ADMIN = "admin";
     //当前页
     public static final String CURRENT_PAGE = "currentPage" ;
+
+    public static final String ADDMIN_ID = "addminId";
 }
