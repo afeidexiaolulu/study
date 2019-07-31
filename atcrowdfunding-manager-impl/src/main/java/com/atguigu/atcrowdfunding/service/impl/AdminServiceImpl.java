@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,11 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private TAdminMapper tAdminMapper;
 
-
     @Autowired
     private TAdminRoleMapper tAdminRoleMapper;
+
+    @Autowired
+    private BCryptPasswordEncoder BCryptPasswordEncoder;
 
     private static Logger logger = LoggerFactory.getLogger(AdminServiceImpl.class);
 
@@ -85,8 +88,11 @@ public class AdminServiceImpl implements AdminService {
         //插入  密码为固定密码   创建时间
         //密码加密
         String userpswd = "123";
-        String digestPassWord = MD5Util.digestPassWord(userpswd);
-        admin.setUserpswd(digestPassWord);
+        /*String digestPassWord = MD5Util.digestPassWord(userpswd);*/
+        //使用密码加密器加密
+        String encode = BCryptPasswordEncoder.encode(userpswd);
+        //创建密码
+        admin.setUserpswd(encode);
         SimpleDateFormat sDF = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
         admin.setCreatetime(sDF.format(new Date()));
         tAdminMapper.insert(admin);

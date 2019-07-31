@@ -4,7 +4,6 @@
 	<artifactId>atcrowdfunding-manager-impl</artifactId>
 	<description>后台管理系统的所有实现类</description>
 
-
 	<parent>
 		<groupId>com.atguigu</groupId>
 		<artifactId>atcrowdfunding-parent</artifactId>

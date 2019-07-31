@@ -28,11 +28,15 @@ public class AtcrowdFundingSecurityConfig extends WebSecurityConfigurerAdapter {
      * spring框架默认为单例
      * @return
      */
-    @Bean
+    @Bean("MyPassWordEncoder")
     public BCryptPasswordEncoder getBCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
+    /*public static void main(String[] args) {
+        String encode = new BCryptPasswordEncoder().encode("123456");
+        System.out.println(encode);
+    }*/
 
     /*配置UserServiceDetails*/
     @Override
@@ -45,10 +49,13 @@ public class AtcrowdFundingSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //super.configure(http);  指定登陆页和登陆成功后去的页面
-        http.formLogin().loginPage("/login.jsp").defaultSuccessUrl("/main.jsp").permitAll();
+        http.formLogin().loginPage("/login.jsp").usernameParameter("loginacct").passwordParameter("userpswd").defaultSuccessUrl("/main.html").permitAll();
 
         //放行静态资源,登陆页
         http.authorizeRequests().antMatchers("/static/**","/login.jsp").permitAll().anyRequest().authenticated();
+
+        //关闭csrf功能
+        http.csrf().disable();
     }
 
 

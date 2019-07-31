@@ -57,7 +57,6 @@
 		<jsp-api.version>2.2</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
 
-
 	</properties>
 	<!-- 依赖管理 -->
 	<dependencyManagement>

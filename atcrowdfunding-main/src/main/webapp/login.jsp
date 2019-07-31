@@ -27,7 +27,7 @@
 
 <div class="container">
 
-    <form class="form-signin" role="form" id="loginFormId" action="${appPath}/login" method="post">
+    <form class="form-signin" role="form" id="loginFormId" action="${appPath}/login.jsp" method="post">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
         <div class="alert alert-danger">
             ${loginError }

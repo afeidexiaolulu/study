@@ -35,19 +35,17 @@ public class LoginController {
     //此方法为了让重定向方法跳转到主页面
     @RequestMapping("/main.html")
     public String main(HttpSession session){
-
         if(session.getAttribute(Const.SYS_MENU)==null){
             //1、查询系统的所有菜单
             List<TMenu> listMenus = systemMenuService.listMenus();
             //2、session；
             session.setAttribute(Const.SYS_MENU, listMenus);
         }
-
         logger.info("正要跳转页面到main");
         return "main";
     }
 
-
+    @Deprecated //标注为过时的
     @RequestMapping("/login")
     public String login(TAdmin tAdmin, HttpSession session, Model model){
         //登陆

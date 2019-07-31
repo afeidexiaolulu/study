@@ -212,8 +212,8 @@
 
 
   <!--listPermissionByUserId-->
-  <select id="listPermissionByUserId">
-    SELECT distinct .* from t_permission tp
+  <select id="listPermissionByUserId" resultMap="BaseResultMap">
+    SELECT distinct tp.* from t_permission tp
       left join t_role_permission trp on tp.id = trp.permissionid
       left join t_role tr on tr.id = trp.roleid
       left join t_admin_role tar on tar.roleid = tr.id

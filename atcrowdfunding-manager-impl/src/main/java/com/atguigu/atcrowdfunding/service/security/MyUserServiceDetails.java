@@ -7,13 +7,17 @@ import com.atguigu.atcrowdfunding.bean.TRole;
 import com.atguigu.atcrowdfunding.mapper.TAdminMapper;
 import com.atguigu.atcrowdfunding.mapper.TPermissionMapper;
 import com.atguigu.atcrowdfunding.mapper.TRoleMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -50,9 +54,25 @@ public class MyUserServiceDetails implements UserDetailsService {
             List<TRole> roleList = tRoleMapper.listRoleNameByUserId(userId);
             //查询权限
             List<TPermission> permissionList = tPermissionMapper.listPermissionByUserId(userId);
-            //封装到User对象中
-
-            //return new User();
+            //封装用户的角色和权限
+            //创建权限集合
+            HashSet<GrantedAuthority> authorities = new HashSet<>();
+            //循环角色
+            for (TRole tRole : roleList) {
+                if(!StringUtils.isEmpty(tRole.getName())){
+                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_"+tRole.getName());
+                    authorities.add(simpleGrantedAuthority);
+                }
+            }
+            //循环权限
+            for (TPermission tPermission : permissionList) {
+                if(!StringUtils.isEmpty(tPermission.getName())){
+                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(tPermission.getName());
+                    authorities.add(simpleGrantedAuthority);
+                }
+            }
+            //封装为自定义的User类
+            return new MyUser(admin,authorities);
         }
         return null;
     }
