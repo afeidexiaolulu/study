@@ -208,4 +208,16 @@
     left JOIN t_permission_menu tpm on tp.id = tpm.permissionid
     WHERE tpm.menuid = #{mId}
   </select>
+
+
+
+  <!--listPermissionByUserId-->
+  <select id="listPermissionByUserId">
+    SELECT distinct .* from t_permission tp
+      left join t_role_permission trp on tp.id = trp.permissionid
+      left join t_role tr on tr.id = trp.roleid
+      left join t_admin_role tar on tar.roleid = tr.id
+      left join t_admin ta on ta.id = tar.adminid
+      where ta.id = #{userId}
+  </select>
 </mapper>

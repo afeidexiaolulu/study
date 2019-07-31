@@ -161,4 +161,11 @@
     set name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="listRoleNameByUserId">
+    select tr.* from t_admin_role tar
+      left join t_admin ta on tar.adminid = ta.id
+      left join t_role tr on tr.id = tar.roleid
+      where ta.id = #{userId}
+  </select>
 </mapper>
